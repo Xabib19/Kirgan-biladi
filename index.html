@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Sirli Ma'lumotlar</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00ff00;
+      font-family: monospace;
+      padding: 20px;
+    }
+    .line {
+      margin: 10px 0;
+      opacity: 0;
+      animation: reveal 1s forwards;
+    }
+    @keyframes reveal {
+      to { opacity: 1; }
+    }
+    marquee {
+      color: red;
+      font-size: 20px;
+    }
+    @keyframes glowing {
+      0% { color: #ff00ff; }
+      50% { color: #00ffff; }
+      100% { color: #ff00ff; }
+    }
+
+    .glowing {
+      animation: glowing 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <h1>Siz yashirgan ma'lumotlar ochilmoqda...</h1>
+  <div id="output"></div>
+
+  <!-- Hackercha fon musiqasi -->
+  <audio autoplay loop>
+    <source src="hacker.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Harakatlanadigan matn -->
+  <marquee behavior="scroll" direction="left" scrollamount="10">
+    ⚠️ MAXFIY MA'LUMOTLAR YUQLANMOQDA... ⚠️
+  </marquee>
+
+  <script>
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function showInfo() {
+      const output = document.getElementById('output');
+
+      const lines = [
+        `🕐 Vaqt zonasi: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
+        `🌐 Brauzer: ${navigator.userAgent}`,
+        `🖥️ Ekran o'lchami: ${screen.width}x${screen.height}`,
+        `📷 Kamerangiz faollashtirilmoqda...`,
+        `🔐 Parolingiz taxmin qilinmoqda...`
+      ];
+
+      for (const line of lines) {
+        const p = document.createElement('p');
+        p.className = 'line';
+        p.textContent = line;
+        output.appendChild(p);
+        await sleep(2000);
+      }
+
+      // Tasodifiy akkauntlar
+      function getRandomAccount() {
+        const accounts = [
+          { platform: 'Telegram', user: 'example_telegram_user' },
+          { platform: 'Instagram', user: 'example_insta_user' },
+          { platform: 'Facebook', user: 'example_fb_user' }
+        ];
+
+        return accounts[Math.floor(Math.random() * accounts.length)];
+      }
+
+      const randomAccount = getRandomAccount();
+      const p = document.createElement('p');
+      p.className = 'line';
+      p.textContent = `${randomAccount.platform} akkaunti: @${randomAccount.user}`;
+      output.appendChild(p);
+
+      // IP orqali manzil
+      fetch("https://ipapi.co/json/")
+        .then(response => response.json())
+        .then(data => {
+          const ipLines = [
+            `🌍 Davlat: ${data.country_name}`,
+            `🏙️ Shahar: ${data.city}`,
+            `📍 Mintaqa: ${data.region}`,
+            `🛰️ IP: ${data.ip}`,
+            `📡 Wifi: ${data.org}`
+          ];
+          let delay = 0;
+          for (const info of ipLines) {
+            setTimeout(() => {
+              const p = document.createElement('p');
+              p.className = 'line';
+              p.textContent = info;
+              output.appendChild(p);
+            }, delay);
+            delay += 2000;
+          }
+        })
+        .catch(() => {
+          const p = document.createElement('p');
+          p.className = 'line';
+          p.textContent = "❌ Joylashuv topilmadi.";
+          output.appendChild(p);
+        });
+    }
+
+    showInfo();
+  </script>
+</body>
+</html>
